@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <head>
+        <title>
+            Home | BöN
+        </title>
+    </head>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+        .heading {
+            font-family: serif;
+            padding: 5px;
+            font-size: 22px;
+            color : rgb(14, 23, 153);
+        }
+
+        .block {
+            display: inline-block;
+            width: 715px;
+            height: 1050px;
+        }
+        .menu {          
+            margin-top: 20px;
+            margin-left: 50px;
+            margin-right: 0px;
+            margin-bottom: 20px;
+            width: 600px;
+            height: 40px;
+            font-family:Arial, Helvetica, sans-serif;
+        }
+
+        .header {
+            display: inline-block;
+            font-size:xx-large;
+            font-weight:bolder;
+            font-style: normal;
+            margin-top: 40px;
+            margin-bottom: 20px;
+            width: 1500px;
+            height: 130px;
+            text-align: center;
+        }
+
+        .items {
+            font-size: 13px;
+            margin-top: 0px;
+        }
+
+        
+        .parallax {
+            background: url('https://csci571.com/hw/hw3/images/Cutlery.png');
+            object-fit: cover; 
+            background-attachment: fixed;
+            background-position: center left;
+            background-repeat: no-repeat;
+            background-size: 1250px 1200px;
+        }
+
+        .detail {
+            color: #012a9b;
+            position:absolute;
+            font-size: 3rem;
+            font-family: serif;
+        }
+
+        .button {
+            position:absolute;
+            padding: 15px 24px; 
+            font-size: 15px;
+            color: rgb(0, 0, 0);
+        }
+        
+        .gridcont {
+            display: grid;
+            width: 1050px;
+            margin-left: 50px;
+            grid-gap: 170px 50px;
+            grid-template-columns: auto auto;
+        }
+
+        .griditem {
+            background-color: rgb(161, 234, 252);
+            object-fit: cover;
+            width: 615px;
+            height: 485px;
+            
+        }
+
+        .caption {
+            font-size: 20px;
+            font-weight: bold;
+            padding-bottom: 80px;
+            padding-top: 50px;
+            text-align: center; 
+            color: blue; 
+            font-family:Georgia, 'Times New Roman', Times, serif;
+        }
+
+    </style>
+    <body>
+    
+        <div class = "heading">
+            <h2 style=" margin-left: 50px; width: 62px; font-weight: bolder;">BöN</h2>
+        </div>
+        <hr style = "width: 100%; border-color: solid rgb(0, 0, 0);">
+        <div class = "inline-block">
+        <div class = "menu">
+            <p class = "items">
+            <span style="color:rgb(31, 42, 196);">Home</span>
+            <span style = "padding-left: 30px;">Decor</span>
+            <span style = "padding-left: 30px;">Your Kitchen</span>
+            <span style = "padding-left: 30px;">Your Bathroom</span>
+            <span style = "padding-left: 30px;">Your Bedroom</span>
+            <span style = "padding-left: 30px;">About</span>
+            <span style = "padding-left: 30px;">Contact</span>
+        </p>
+            
+        </div></div>
+        <div class = "parallax", style="height: 600px;width: 1200px;margin-left: 50px;">
+        <div style="position: relative;">
+            <h1 class = "detail", style="top: 40px; left: 80px;">Fall Cutlery</h1>
+            <h1 class = "detail", style = "top: 115px; left: 80px;">Collection</h1>
+            <button class = "button", style="top: 250px; left: 80px;">Shop Now</button>
+        </div>
+        </div>
+        <div>
+            <div class = "header"><p style="color: rgb(47, 56, 185); font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif ">Defining Styling Since 1965</p></div>
+            <div class = "gridcont">
+                <div class = "griditem"><img src="http://csci571.com/hw/hw3/images/Decor.png" alt="Error image not found" style="object-fit: cover; width: 575px;height: 485px;">
+                    <figcaption class = "caption">Decor</figcaption></div>
+                <div class = "griditem"><img src="http://csci571.com/hw/hw3/images/Bedroom.png" alt="Error image not found" style="object-fit: cover; width: 575px;height: 485px;">
+                    <figcaption class = "caption">Your Bedroom</figcaption></div>
+                <div class = "griditem"><img src="http://csci571.com/hw/hw3/images/Kitchen.png" alt="Error image not found" style="object-fit: cover; width: 575px;height: 485px;">
+                    <figcaption class = "caption">Your Kitchen</figcaption></div>
+                <div class = "griditem"><img src="http://csci571.com/hw/hw3/images/Bathroom.png" alt="Error image not found" style="object-fit: cover; width: 575px;height: 485px;">
+                    <figcaption class = "caption">Your Bathroom</figcaption></div>
+            </div>
+        </div>
+        
+    </body>
+</html>

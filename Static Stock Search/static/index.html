@@ -1,0 +1,638 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>
+        Stock Search
+    </title>
+
+    <script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/data.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+    <script>
+        var outlook = null;
+        var summary = null;
+        var charts = null;
+        var news = null;
+        var ticker = null;
+
+        function onload() {
+            //info division visibility set to hidden
+            document.getElementById("tabs").style.display = "none";
+            document.getElementById("tbl").style.display = "none";
+            document.getElementById("tbl_sum").style.display = "none";
+            document.getElementById("container").style.display = "none";
+            document.getElementById("parentDiv").style.display = "none";
+            document.getElementById("notFound").style.display = "none";
+            clear_json();
+        }
+
+        function clear_json() {
+            outlook = null;
+            summary = null;
+            charts = null;
+            news = null;
+            ticker = null;
+            document.getElementById("notFound").style.display = "none";
+        }
+
+        function getStocks() {
+            var data = ticker;
+            if (outlook == null) {
+                var url = '/get-stocks?s_ticker=' + data
+                const XHR = new XMLHttpRequest();
+                XHR.open('GET', url, true);
+                XHR.onreadystatechange = function () {
+                    if (XHR.readyState == 4 && XHR.status == 200) {
+                        var json = JSON.parse(XHR.responseText);
+                        if (json !== undefined && json != null && json["detail"] == undefined) {
+                            outlook = json;
+                            populate_table(json);
+                        } else {
+                            display_alert_message();
+                        }
+                    }
+                };
+
+                XHR.send(null);
+            } else {
+                populate_table(outlook);
+            }
+        }
+
+        function get_summary() {
+            var data = ticker;
+            if (summary == null) {
+                var url = '/get-summary?s_ticker=' + data
+                const XHR = new XMLHttpRequest();
+                XHR.open('GET', url, true);
+                XHR.onreadystatechange = function () {
+                    if (XHR.readyState == 4 && XHR.status == 200) {
+                        var json = JSON.parse(XHR.responseText);
+                        if (json !== undefined && json != null) {
+                            summary = json[0];
+                            populate_summary_table(json[0]);
+                        } else {
+                            display_alert_message(json.message);
+                        }
+                    }
+                };
+
+                XHR.send(null);
+            } else {
+                populate_summary_table(summary);
+            }
+
+        }
+
+        function getCharts() {
+            var data = ticker;
+            if (charts == null) {
+                var url = '/get-charts?s_ticker=' + data;
+                const XHR = new XMLHttpRequest();
+                XHR.open('GET', url, true);
+                XHR.onreadystatechange = function () {
+                    if (XHR.readyState == 4 && XHR.status == 200) {
+                        var json = JSON.parse(XHR.responseText);
+                        if (json !== undefined && json != null) {
+                            charts = json;
+                            populate_charts(json, data.toUpperCase());
+                        } else {
+                            display_alert_message(json.message);
+                        }
+                    }
+                };
+
+                XHR.send(null);
+            } else {
+                populate_charts(charts, data.toUpperCase());
+            }
+        }
+
+        function getNews() {
+            var data = ticker;
+            if (news == null) {
+                var url = '/get-News?s_ticker=' + data;
+                const XHR = new XMLHttpRequest();
+                XHR.open('GET', url, true);
+                XHR.onreadystatechange = function () {
+                    if (XHR.readyState == 4 && XHR.status == 200) {
+                        var json = JSON.parse(XHR.responseText);
+                        if (json !== undefined && json != null) {
+                            news = json;
+                            populate_news(json);
+                        } else {
+                            display_alert_message(json.message);
+                        }
+                    }
+                };
+
+                XHR.send(null);
+            } else {
+                populate_news(news);
+            }
+
+        }
+
+        function populate_rows(col_name, col_val, emptble) {
+            var tr = emptble.insertRow(-1);
+            var cell1 = tr.insertCell(0);
+            var cell2 = tr.insertCell(1);
+            cell1.style["fontWeight"] = "bolder";
+            cell1.style["textAlign"] = "left";
+            cell1.style["background-color"] = "rgb(222,222,222)";
+            cell1.style["width"] = "250px";
+            cell1.style["paddingLeft"] = "5px";
+            cell2.style["textAlign"] = "center";
+            if (col_name == 'Description') {
+                cell2.setAttribute("class", "line-clamp");
+                cell2.style["paddingLeft"] = "10px";
+                cell2.style["paddingRight"] = "8px";
+            }
+            cell1.innerHTML = col_name;
+            cell2.innerHTML = col_val;
+
+            emptble.appendChild(tr);
+        }
+
+        function populate_summaryrows(col_name, col_val, stktble) {
+            let tr = stktble.insertRow(-1);
+            let cell1 = tr.insertCell(0);
+            let cell2 = tr.insertCell(1);
+            cell1.style["fontWeight"] = "bolder";
+            cell1.style["textAlign"] = "left";
+            cell1.style["background-color"] = "rgb(222,222,222)";
+            cell1.style["width"] = "250px";
+            cell1.style["paddingLeft"] = "5px";
+            cell2.style["textAlign"] = "center";
+            cell1.innerHTML = col_name;
+            cell2.innerHTML = col_val;
+            if (col_name == "Change" || col_name == "Change Percent") {
+                var img = document.createElement('img');
+                if (col_val > 0) {
+                    img.src = "https://csci571.com/hw/hw6/images/GreenArrowUp.jpg";
+                } else if (col_val < 0) {
+                    img.src = "https://csci571.com/hw/hw6/images/RedArrowDown.jpg";
+                } else {
+                    img.src = "";
+                }
+                img.style["height"] = "15px";
+                img.style["width"] = "15px";
+                var span = document.createElement("span");
+                if (col_name == "Change Percent"){
+                    span.innerHTML = "%" + "  ";
+                }
+                else{
+                    span.innerHTML ="  ";
+                }
+                cell2.appendChild(span);
+                cell2.appendChild(img);
+            }
+            stktble.appendChild(tr);
+        }
+
+        function populate_table(info) {
+            document.getElementById("tabs").style.display = "inline-block";
+            document.getElementById("tbl").style.display = "inline-block";
+            document.getElementById("tbl_sum").style.display = "none";
+            document.getElementById("container").style.display = "none";
+            document.getElementById("parentDiv").style.display = "none";
+            let emptble = document.createElement("table");
+            emptble.setAttribute('id', 'tble');
+            populate_rows("Company Name", info["name"], emptble);
+            populate_rows("Stock Ticker Symbol", info["ticker"], emptble);
+            populate_rows("Stock Exchange Code", info["exchangeCode"], emptble);
+            populate_rows("Company Start Date", info["startDate"], emptble);
+            populate_rows("Description", info["description"], emptble);
+            let div = document.getElementById("tbl");
+            div.innerHTML = "";
+            div.appendChild(emptble);
+
+        }
+
+        function populate_summary_table(info) {
+            document.getElementById("tbl").style.display = "none";
+            document.getElementById("tbl_sum").style.display = "inline-block";
+            document.getElementById("container").style.display = "none";
+            document.getElementById("parentDiv").style.display = "none";
+            let emptble = document.createElement("table");
+            emptble.setAttribute('id', 'stocksum');
+            var last = info["last"];
+            var prev = info['prevClose'];
+            var change = (last - prev).toFixed(2);
+            var change_percent = ((change / prev) * 100).toFixed(2);
+            populate_summaryrows("Stock Ticker Symbol", info["ticker"], emptble);
+            populate_summaryrows("Trading Day", info["timestamp"].substring(0, 10), emptble);
+            populate_summaryrows("Previous Closing Price", prev, emptble);
+            populate_summaryrows("Opening Price", info["open"], emptble);
+            populate_summaryrows("High Price", info["high"], emptble);
+            populate_summaryrows("Low Price", info["low"], emptble);
+            populate_summaryrows("Last Price", last, emptble);
+            populate_summaryrows("Change", change, emptble);
+            populate_summaryrows("Change Percent", change_percent, emptble);
+            populate_summaryrows("Number of Shares Traded", info["volume"], emptble);
+            let div = document.getElementById("tbl_sum");
+            div.innerHTML = "";
+            div.appendChild(emptble);
+        }
+
+        function create_div(article) {
+            var div = document.createElement("div");
+            var img = document.createElement("img");
+            var title = document.createElement("H3");
+            var date = document.createElement("p");
+            var aTag = document.createElement("a");
+            div.setAttribute("class", "news");
+            img.setAttribute("class", "image");
+            title.setAttribute("class", "news_head");
+            date.setAttribute("class", "news_date");
+            img.src = article['urlToImage'];
+            div.appendChild(img);
+            title.innerHTML = article['title'];
+            div.appendChild(title);
+            var publishedAt = article['publishedAt'].substring(0, 10);
+            publishedAt = publishedAt.replaceAll("-", "/");
+            date.innerHTML = "Published Date:   " + publishedAt;
+            div.appendChild(date);
+            aTag.setAttribute('href', article['url']);
+            aTag.setAttribute("target", "_blank");
+            aTag.setAttribute("rel", "noopener noreferrer");
+            aTag.innerText = "See Original Post";
+            div.appendChild(aTag);
+            return div;
+        }
+
+        function populate_news(news) {
+            document.getElementById("tbl").style.display = "none";
+            document.getElementById("tbl_sum").style.display = "none";
+            document.getElementById("container").style.display = "none";
+            document.getElementById("parentDiv").style.display = "inline-block";
+            var div1 = create_div(news["articles"][0]);
+            var div2 = create_div(news["articles"][1]);
+            var div3 = create_div(news["articles"][2]);
+            var div4 = create_div(news["articles"][3]);
+            var div5 = create_div(news["articles"][4]);
+            var parent = document.getElementById("parentDiv");
+            parent.innerHTML = "";
+            parent.appendChild(div1);
+            parent.appendChild(div2);
+            parent.appendChild(div3);
+            parent.appendChild(div4);
+            parent.appendChild(div5);
+        }
+
+        function populate_charts(json, stk) {
+            document.getElementById("tbl").style.display = "none";
+            document.getElementById("tbl_sum").style.display = "none";
+            document.getElementById("container").style.display = "inline-block";
+            document.getElementById("parentDiv").style.display = "none";
+            var date = new Date();
+            var today = new Date(Date.UTC(date.getFullYear(), date.getMonth(), date.getDate())).toJSON().slice(0, 10);
+            yaxis = simplify(json);
+            Highcharts.stockChart('container', {
+                title: {
+                    text: 'Stock Price ' + stk + " " + today
+                },
+
+                subtitle: {
+                    text: '<a target="_blank" rel="noopener noreferrer" href="https://api.tiingo.com/">Source: Tiingo</a>',
+                    useHTML: true
+                },
+
+                xAxis: {
+                    gapGridLineWidth: 0
+                },
+
+                rangeSelector: {
+                    buttons: [{
+                        type: 'day',
+                        count: 7,
+                        text: '7d'
+                    },
+                        {
+                            type: 'day',
+                            count: 15,
+                            text: '15d'
+                        }, {
+                            type: 'month',
+                            count: 1,
+                            text: '1m'
+                        }, {
+                            type: 'month',
+                            count: 3,
+                            text: '3m'
+                        }, {
+                            type: 'month',
+                            count: 6,
+                            text: '6m'
+                        }],
+                    selected: 4,
+                    inputEnabled: false
+                },
+
+                plotOptions: {
+                    column: {
+                        maxPointWidth: 2
+                    },
+                    series: {
+                        pointPlacement: 'on'
+                    }
+                },
+
+                yAxis: [{
+
+                    title: {
+                        text: 'Stock Price',
+                        align: 'middle',
+                    }, opposite: false
+                }, {
+
+                    title: {
+                        text: 'Volume',
+                        align: 'middle',
+
+                    }, opposite: true
+                }],
+
+                series: [{
+                    name: stk,
+                    type: 'area',
+                    yAxis: 0,
+                    data: yaxis[0],
+                    gapSize: 5,
+                    tooltip: {
+                        valueDecimals: 2
+                    },
+                    fillColor: {
+                        linearGradient: {
+                            x1: 0,
+                            y1: 0,
+                            x2: 0,
+                            y2: 1
+                        },
+                        stops: [
+                            [0, Highcharts.getOptions().colors[0]],
+                            [1, Highcharts.color(Highcharts.getOptions().colors[0]).setOpacity(0).get('rgba')]
+                        ]
+                    },
+                    threshold: null
+                },
+                    {
+                        name: stk + " Volume",
+                        type: 'column',
+                        data: yaxis[1],
+                        yAxis: 1,
+                        gapSize: 5,
+                        tooltip: {
+                            valueDecimals: 0
+                        },
+                        threshold: null
+                    }]
+            });
+        }
+
+        function simplify(data) {
+            var stkPrice = [];
+            var volume = []
+            var datalength = data.length;
+            for (var i = 0; i < datalength; i += 1) {
+                var date = new Date(data[i]['date']);
+                var date_UTC = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(), date.getUTCDate());
+                stkPrice.push([
+                    date_UTC, data[i]['close']
+                ]);
+                volume.push([date_UTC, data[i]['volume']]);
+            }
+            var res = []
+            res.push(stkPrice);
+            res.push(volume);
+            return res;
+        }
+
+        function stock_Action(evt) {
+            var i, tabcontent, tablinks;
+            tablinks = document.getElementsByClassName("tablinks");
+            for (i = 0; i < tablinks.length; i++) {
+                tablinks[i].className = tablinks[i].className.replace(" active", "");
+            }
+            evt.currentTarget.className += " active";
+        }
+
+        function display_alert_message() {
+            onload();
+            document.getElementById("notFound").style.display = "inline-block";
+        }
+
+        function resetPage() {
+            var txtbox = document.getElementById("myText");
+            txtbox.innerText = "";
+            onload();
+        }
+
+        function default_click() {
+            ticker = document.getElementById('myText').value;
+            document.getElementById("defaultOpen").click();
+        }
+
+    </script>
+
+
+</head>
+
+<style>
+
+    .input {
+        border-radius: 5px;
+        border-style: none;
+        height: 20px;
+    }
+
+    input:focus {
+        border: solid 2px;
+        border-color: black;
+        outline: 0;
+    }
+
+    #block {
+        height: 250px;
+        width: 900px;
+        background-color: rgb(230, 230, 230);
+        border-radius: 7px;
+        margin-left: 250px;
+        margin-top: 25px;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    table, td {
+        border: solid 1px #cdcdcd;
+        border-collapse: collapse;
+    }
+
+    .divNews {
+        height: auto;
+        width: auto;
+        margin-top: 45px;
+        margin-left: 250px;
+    }
+
+    .line-clamp {
+        display: -webkit-box;
+        -webkit-line-clamp: 5;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+    }
+
+    .news {
+        display: inline-block;
+        height: auto;
+        width: 900px;
+        background-color: #f1f1f1;
+        margin-bottom: 20px;
+        border-radius: 5px;
+    }
+
+    .image {
+        float: left;
+        height: 95px;
+        width: 85px;
+        padding-left: 13px;
+        padding-top: 5px;
+        padding-bottom: 5px;
+        padding-right: 13px;
+    }
+
+    .news_head {
+        margin-bottom: 0px;
+        margin-top: 2px;
+    }
+
+    .news_date {
+        margin-top: 0px;
+        margin-bottom: 0px;
+    }
+
+    .divblk {
+        display: inline-block;
+        height: auto;
+        width: 900px;
+        background-color: #f1f1f1;
+        margin-top: 45px;
+        margin-left: 250px;
+
+    }
+
+    .btn {
+        border-radius: 5px;
+        border-style: none;
+        height: 30px;
+        width: 90px;
+        font-size: 13px;
+        margin-top: 15px;
+        background-color: white;
+    }
+
+    .btn:hover {
+        background-color: #ddd;
+    }
+
+    /* Style the tab */
+    .tab {
+        overflow: hidden;
+        border: 1px solid #ccc;
+        background-color: #f1f1f1;
+        height: 50px;
+        width: 900px;
+        margin-left: 250px;
+        margin-top: 10px;
+    }
+
+    /* Style the buttons inside the tab */
+    .tab button {
+        background-color: inherit;
+        float: left;
+        border: none;
+        outline: none;
+        cursor: pointer;
+        padding: 16px 16px;
+        transition: 0.3s;
+        font-size: 17px;
+    }
+
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+        background-color: #ddd;
+    }
+
+    /* Create an active/current tablink class */
+    .tab button.active {
+        background-color: rgb(208, 208, 208);
+    }
+
+    /* Style the tab content */
+    .tabcontent {
+        display: none;
+        padding: 6px 12px;
+        border: 1px solid #ccc;
+        border-top: none;
+    }
+
+    #info {
+        display: inline-block;
+        height: 400px;
+        width: 900px;
+        background-color: white;
+        margin-left: 250px;
+    }
+</style>
+
+<body bgcolor="#8177C9" onload="onload()" style="margin-top: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
+    margin-bottom: 0px;
+    font-family: Arial">
+
+<div id="block">
+    <p style="font-weight: bolder; font-family:Arial; font-size: xx-large;padding-top: 20px;padding-bottom: 10px; text-align: center;">
+        Stock Search</p>
+
+    <form method='GET' onsubmit="clear_json(); default_click(); return false;">
+
+        <label for="myText" style="margin-left: 300px;">
+            Enter Stock Ticker Symbol
+            <span style="color: #ff0000;">* &nbsp;&nbsp;</span>
+        </label>
+        <input type="text" class = "input" id="myText" name="s_ticker" required>
+        <br>
+        <input class="btn" style="margin-left: 340px;margin-top: 30px" type="submit" value="Search">
+        <input class="btn" style="margin-left: 50px;margin-top: 30px" type="reset" value="Clear" onclick="resetPage();">
+
+    </form>
+</div>
+<hr style="color: white; margin-left: 250px; margin-top: 15px; margin-bottom: 25px; width: 900px;">
+<p id="notFound" style="color:black; font-weight: bolder;margin-left: 460px; font-size: larger;">
+    Error: No record has been found, please enter a valid symbol.
+</p>
+<div class="tab" id="tabs">
+    <button class="tablinks" onclick="stock_Action(event); getStocks();" id="defaultOpen">Company Outlook</button>
+    <button class="tablinks" onclick="stock_Action(event); get_summary();">Stock Summary</button>
+    <button class="tablinks" onclick="stock_Action(event); getCharts();">Charts</button>
+    <button class="tablinks" onclick="stock_Action(event); getNews();">Latest News</button>
+</div>
+
+<div class="divblk" id="tbl">s
+
+</div>
+<div class="divblk" id="tbl_sum">
+
+</div>
+<div class="divblk" id="container" style="height: 400px; min-width: 310px"></div>
+<div class="divNews" id="parentDiv">
+
+</div>
+</body>
+
+</html>
