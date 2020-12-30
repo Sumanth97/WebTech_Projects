@@ -1,0 +1,80 @@
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css">
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v8.0" nonce="IhYPbi0Y"></script>
+
+<div class="container" *ngIf = " ticker && rightcol">
+    <div class="row" *ngFor="let article of leftcol; index as i;">
+        <div class="col col-12 col-sm-6 mt-4">
+            <div class = "card h-100 w-100 m-0 bg-light" (click) = "displayNewsModal(modal, article)">
+                <div class = "row no-gutters align-items-center">
+                    <div class = " col-12 col-sm-3 align-self-center p-2">
+                        <img src={{article.urlToImage}} class="img-fluid rounded" alt="News Image" >
+                    </div>
+                    <div class = "col-12 col-sm-9 align-self-center">
+                        <p class="card-text">{{article.title}}</p>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        </div>
+
+        <div class="col col-12 col-sm-6 mt-4" *ngIf = "rightcol[i]">
+            <div class="card h-100 w-100 m-0 bg-light" (click) = "displayNewsModal(modal, rightcol[i])">
+                <div class = "row no-gutters align-items-center">
+                    <div class = " col-12 col-sm-3 align-self-center p-2">
+                        <img src={{rightcol[i].urlToImage}} class="img-fluid rounded" alt="News Image">
+                    </div>
+                    <div class = "col-12 col-sm-9 align-self-center">
+                        <p class="card-text">{{rightcol[i].title}}</p>
+                    </div>
+                </div>
+            </div>
+
+
+        </div>
+    </div>
+</div>
+
+
+<ng-template #modal let-modal>
+    <div class="modal-header d-block">
+        <div class = "d-flex">
+            <h3 class="modal-title heading mb-0" id="modal-basic-title">{{article['source']['name']}}</h3>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <h5 class="modal-title text-secondary subheading mb-0" id="modal-basic-subtitle">{{article['publishedAt'] | date: 'MMMM d, y'}}</h5>
+    </div>
+    <div class="modal-body">
+        <h4 class = "title mb-0">
+            {{article['title']}}
+        </h4>
+        <p class = "mb-0">
+            {{article['description']}}
+        </p>
+        <p class = "text-black-50">
+            For more details click 
+            <a href = "{{article['url']}}" target="_blank" rel = "noopener noreferrer">here</a>
+        </p>
+    </div>
+    <div class="modal-footer" style="border-top: 0 none; display:block;">  
+        <div class = "card">
+            <div class = "card-body">
+                <p>Share</p>
+                <a class="twitter-share-button" target="_blank" rel = "noopener noreferrer" href="https://twitter.com/intent/tweet?text={{article['title']}}&url={{article['url']}}">
+                    <i class="fa fa-twitter fa-3x" aria-hidden="true"></i>
+                </a>
+                <span class = "ml-2" data-href="https://developers.facebook.com/docs/plugins/">
+                    <a target="_blank"  rel = "noopener noreferrer" 
+                    href="https://www.facebook.com/sharer/sharer.php?u={{article['url']}}&amp;src=sdkpreparse" class="fb-xfbml-parse-ignore">
+                        <i class="fa fa-facebook-square fa-3x" aria-hidden="true" style= "color:blue"></i>
+                    </a>
+                </span>
+            </div>
+
+        
+        </div>
+    </div>
+  </ng-template>

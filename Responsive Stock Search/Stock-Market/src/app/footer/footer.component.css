@@ -1,0 +1,12 @@
+footer {
+    /* margin-top: 8px; */
+    display: flex;
+    align-items: center;
+    background-color: rgba(173, 171, 171, 0.658);
+    margin-top: auto;
+  left: 0;
+  bottom: 0;
+  height: 7%;
+  margin-bottom: 0em;
+    /* line-height: 20px; */
+  }

@@ -1,0 +1,18 @@
+{
+  "name": "stock-market-server",
+  "version": "1.0.0",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "SUMANTH MOTHKURI",
+  "license": "ISC",
+  "description": "A RESTful node js application built to fulfill the requirements for HOMEWORK8 CSCI571",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "jquery": "^3.5.1",
+    "request": "^2.88.2"
+  }
+}

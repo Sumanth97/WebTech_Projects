@@ -1,0 +1,28 @@
+   h2{
+    /* font-weight: 500; */
+    font-size: 1.5rem;
+   }
+   
+   
+   /* .navbar ul li.active{
+        border: 0.5 rem white; 
+    } */
+  
+    .navbar-dark {
+      background-color: #7545fa;
+      }
+  
+      /* .navbar-custom .navbar-nav .nav-link {
+      color: rgba(255, 255, 255, 0.521);
+  } */
+  /* change the color of active or hovered links */
+  /* .navbar-custom .nav-item.active .nav-link,
+  .navbar-custom .nav-item:focus .nav-link,
+  .navbar-custom .nav-item:hover .nav-link {
+      color: #ffffff;
+  } */
+
+  .tabActive{
+      border: 1.5px solid white;
+      border-radius: 15px;
+  }

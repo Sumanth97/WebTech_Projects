@@ -1,0 +1,149 @@
+<script src="https://code.highcharts.com/stock/highstock.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/data.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
+    <script src="https://code.highcharts.com/stock/modules/export-data.js"></script>
+
+<div class="container">
+    <div class="row" >
+        <div class="col col-12 col-sm-6 mx-auto" *ngIf = "details">
+            <div class="row" *ngIf = details>
+                <div class="col col-sm-6 mr-auto">
+                    <table class="table table-condensed table-borderless">
+                        <thead>
+                            <tr>
+                              <th scope="col" class="col-auto"></th>
+                              <th scope="col" class="col-sm-auto"></th>
+                            </tr>
+                          </thead>
+                        <tbody>
+                            <tr>
+                                <td>High Price:</td>
+                                <td>{{prices['high'].toFixed(2)}}</td>
+                            </tr>
+                            <tr>
+                                <td>Low Price:</td>
+                                <td>{{prices['low'].toFixed(2)}}</td>
+                            </tr>
+                            <tr>
+                                <td>Open Price:</td>
+                                <td>{{prices['open'].toFixed(2)}}</td>
+                            </tr>
+                            <tr>
+                                <td>Prev Close:</td>
+                                <td>{{prices['prevClose'].toFixed(2)}}</td>
+                            </tr>
+                            <tr>
+                                <td>Volume:</td>
+                                <td>{{prices['volume'] | number }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    
+                </div>
+                <div class = "col col-sm-6 mr-auto" *ngIf = "marketStatus">
+                    <table class="table table-condensed table-borderless">
+                        <thead>
+                            <tr>
+                              <th scope="col" class="col-auto"></th>
+                              <th scope="col" class="col-sm-auto"></th>
+                            </tr>
+                          </thead>
+                        <tbody>
+                            <tr>
+                                <td>Mid Price::</td>
+                                <!-- <td *ngIf = "midVal else this" >{{prices['mid'].toFixed(2)}}</td>
+                                <ng-template #this><td>-</td> </ng-template> -->
+                                <td>{{prices['mid']? prices['mid'].toFixed(2) : '-'}}</td>
+                            </tr>
+                            <tr>
+                                <td>Ask Price:</td>
+                                <td>{{prices['askPrice'].toFixed(2)}}</td>
+                            </tr>
+                            <tr>
+                                <td>Ask Size:</td>
+                                <td>{{prices['askSize'].toFixed(2)}}</td>
+                            </tr>
+                            <tr>
+                                <td>Bid Price:</td>
+                                <td>{{prices['bidPrice'].toFixed(2)}}</td>
+                            </tr>
+                            <tr>
+                                <td>Bid Size:</td>
+                                <td>{{prices['bidSize']}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <!-- <div class="row">
+                        <div class="col-sm-5 pr-0">
+                            <p class="float-sm-left">Mid Price:</p>
+                        </div>
+                        <div class="col-sm-7 pl-0" >
+                            <p class="float-sm-right"*ngIf = "midVal else this" >{{prices['mid'].toFixed(2).toString()}}</p>
+                            <ng-template #this><p class="float-sm-right">-</p> </ng-template>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 pr-0">
+                            <p class="float-sm-left">Ask Price:</p>
+                        </div>
+                        <div class="col-sm-7 pl-0">
+                            <p class="float-sm-right" >{{prices['askPrice'].toFixed(2).toString()}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 pr-0">
+                            <p class="float-sm-left">Ask Size:</p>
+                        </div>
+                        <div class="col-sm-7 pl-0">
+                            <p class="float-sm-right" >{{prices['askSize'].toFixed(2).toString()}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 pr-0">
+                            <p class="float-sm-left">Bid Price:</p>
+                        </div>
+                        <div class="col-sm-7 pl-0">
+                            <p class="float-sm-right" >{{prices['bidPrice'].toFixed(2).toString()}}</p>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-sm-5 pr-0">
+                            <p class="float-sm-left">Bid Size:</p>
+                        </div>
+                        <div class="col-sm-7 pl-0">
+                            <p class="float-sm-right" >{{prices['bidSize'].toFixed(2).toString()}}</p>
+                        </div>
+                    </div> -->
+                </div>
+                <!-- <ng-template #nothing></ng-template> -->
+                <div class = "col col-12 col-sm-12 mt-3 pt-3 mr-auto">
+                    <h2 class = "text-center"> Company's Description</h2>
+                    <p class = "text-left" >{{"Start Date: " + details['startDate']}}</p>
+                    <p class = "text-left mt-3" >{{details['description']}}</p>
+                </div>
+            </div>
+            <!-- <div class = "row mt-3 pt-3" [ngClass] = "details">
+                    <h2 class = "col display-3 text-center font-weight-bold"> Company's Description</h2>
+                
+            </div>
+            <div class = "row" [ngClass] = "details">
+                <p class = "col text-left" >{{"Start Date: " + details['startDate']}}</p>
+            </div>
+            <div class = "row" [ngClass] = "details">
+                <div class = "col items-align-center">
+                    <p class = "text-left" >{{details['description']}}</p>
+                </div>
+            </div> -->
+        </div>
+        <div class = "col col-12 col-sm-6" *ngIf = "chartData">
+    
+                    <highcharts-chart
+                    [Highcharts] = "Highcharts" 
+                    [constructorType]="'stockChart'" 
+                    [options] = "chartOptions" 
+                    style = "width: 90%; height: 35rem; display: block;">
+                    </highcharts-chart>
+            
+        </div>
+    </div>
+</div>

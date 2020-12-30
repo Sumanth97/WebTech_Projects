@@ -1,0 +1,27 @@
+<div>
+  <nav class = "navbar navbar-expand-lg navbar-dark fixed-top">
+    <h2 class = "my-auto navbar-brand">Stock Search </h2>
+    <button class="navbar-toggler btn" type="button" data-toggle="collapse" data-target="#navbarCollapse"
+    aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation" (click)="isCollapsed = !isCollapsed"
+    [attr.aria-expanded]="!isCollapsed">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse nav-collapse navbar-collapse flex-grow-1 text-right" id="navbarCollapse" [ngbCollapse]="isCollapsed">
+      <ul class="navbar-nav ml-auto flex-nowrap">
+        <li class="nav-item px-2">
+          <a class="nav-link" routerLink = '/' routerLinkActive = "tabActive" [routerLinkActiveOptions] = "{exact:true}"
+          data-toggle="collapse" data-target=".navbar-collapse">Search</a>
+        </li>
+        <li class="nav-item px-2">
+          <a class="nav-link" routerLink = '/watchlist' routerLinkActive = "tabActive" [routerLinkActiveOptions] = "{exact:true}"
+          data-toggle="collapse" data-target=".navbar-collapse">Watchlist</a>
+        </li>
+        <li class="nav-item px-2">
+          <a class="nav-link" routerLink = '/portfolio' routerLinkActive = "tabActive" [routerLinkActiveOptions] = "{exact:true}"
+          data-toggle="collapse" data-target=".navbar-collapse" >Portfolio</a>
+        </li>
+      </ul>
+    </div>
+  </nav> 
+</div>
+

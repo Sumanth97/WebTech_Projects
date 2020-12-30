@@ -1,0 +1,17 @@
+.heading{
+    font-weight: 500;
+    font-size: 2rem;
+} 
+
+.subheading{
+    font-size: .8rem;
+}
+
+button[aria-label="Close"]:focus {
+    outline: none;
+  }
+
+  .title{
+      font-weight: 450;
+      font-size: 1.2rem;
+  }

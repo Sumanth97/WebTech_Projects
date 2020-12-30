@@ -1,0 +1,10 @@
+ h1{
+    font-weight: 500;
+    font-size: 4rem;
+ }
+
+ input{
+    border-style: solid !important;
+    outline: none !important;
+    border-color: #7545fa !important;
+ }

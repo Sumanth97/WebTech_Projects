@@ -1,0 +1,136 @@
+<div class = "container">
+    <div class = "row mt-5 pt-5"></div>
+    <h1 class = "display-4 font-weight-bold">My Portfolio</h1>
+    <div *ngIf="pageLoading" style="display: flex; justify-content: center; align-items: center;">
+      <mat-spinner diameter="50"></mat-spinner>
+  </div>  
+    <ngb-alert [dismissible] = 'false' type = "warning" *ngIf = "isempty">
+        Currently you don't have any stock.
+    </ngb-alert>
+    <div *ngIf = "stockList && stockList_data">
+        <div *ngFor = "let ticker of stockList" class = "card">
+            <a class="card-block" [routerLink]="['/details', ticker]" style = "text-decoration: none; color: black;">
+                <div class="card-header" >
+                    <span style = "font-size: 1.75rem;">
+                        {{ticker}}
+                    </span>
+                    <span class="card-subtitle text-secondary">
+                        {{stockList_data[ticker].name}}
+                    </span>
+                </div>
+            </a>
+           <div class = "card-body">
+               <div class = "row">
+                <div class = "col col-12 col-md-6">
+                    <p>
+                        Quantity: <span style = "float: right;">
+                            {{stockList_data[ticker].stockqty}}
+                        </span>
+                    </p>
+                    <p>
+                        Avg. Cost / Share: <span style = "float: right;">
+                            {{stockList_data[ticker].meanCost}}
+                        </span>
+                    </p>
+                    <p>
+                        Total Cost: <span style = "float: right;">
+                            {{stockList_data[ticker].totalCost}}
+                        </span>
+                    </p>
+                </div>
+                <div class = "col col-12 col-md-6">
+                    <p>
+                        Change: <span style = "float: right;" [ngStyle] = "{'color' : stockList_data[ticker].changeColor}">
+                            <span *ngIf = "stockList_data[ticker].change > 0" >
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-up-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.247 4.86l-4.796 5.481c-.566.647-.106 1.659.753 1.659h9.592a1 1 0 0 0 .753-1.659l-4.796-5.48a1 1 0 0 0-1.506 0z"/>
+                                  </svg>
+                            </span>
+                            <span *ngIf = "stockList_data[ticker].change < 0">
+                                <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-caret-down-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M7.247 11.14L2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z"/>
+                                  </svg>
+                            </span>
+                            {{stockList_data[ticker].change}}
+                        </span>
+                    </p>
+                    <p>
+                        Current Price: <span style = "float: right;" [ngStyle] = "{'color' : stockList_data[ticker].changeColor}">
+                            {{stockList_data[ticker].last.toFixed(2)}}
+                        </span>
+                    </p>
+                    <p>
+                        Market Value: <span style = "float: right;" [ngStyle] = "{'color' : stockList_data[ticker].changeColor}">
+                            {{stockList_data[ticker].marketVal.toFixed(2)}}
+                        </span>
+                    </p>
+                </div>
+               </div>
+                
+            </div>
+            <div class="card-footer">
+                <button type="button" class="btn btn-danger" style = "float: right; margin: 0 0.5rem;"
+                    (click)="displayModal(sellModal, this.ticker, this.stockList_data[ticker])">Sell</button>
+                <button type="button" class="btn btn-primary" style = "float: right; margin: 0 0.5rem;"
+                    (click)="displayModal(buyModal, this.ticker, this.stockList_data[ticker])">Buy</button>
+            </div>
+            
+        </div>
+    </div>
+</div>
+
+<ng-template #buyModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ticker}}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body ml-3">
+        <span>
+            Current Price: {{globalLast}}
+        </span>
+      <form>
+        <div class="form-group form-inline mt-1">
+          <label for="noOfStocks">Quantity &nbsp;</label>
+          <div class="input-group">
+            <input id="current_qty" type = "number" class="form-control" placeholder="0" name="current_qty" ngbAutofocus [(ngModel)] = "current_qty">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer" style = "display: block;">
+        <div style = "float:left;">
+        Total : {{cost.toFixed(2)}}
+        </div>
+      <button type="button" class="btn btn-success" (click)="modal.close('Buy Click')" style = "float:right;" [disabled] = "current_qty < 1 || !current_qty">Buy</button>
+    </div>
+  </ng-template>
+
+  <ng-template #sellModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ticker}}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('Cross click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body ml-3">
+        <span>
+            Current Price: {{globalLast}}
+        </span>
+      <form>
+        <div class="form-group form-inline mt-1">
+          <label for="noOfStocks">Quantity &nbsp;</label>
+          <div class="input-group">
+            <input id="current_qty" type = "number" class="form-control" placeholder="0" name="current_qty" ngbAutofocus [(ngModel)] = "current_qty">
+          </div>
+        </div>
+      </form>
+    </div>
+    <div class="modal-footer" style = "display: block;">
+        <div style = "float:left;">
+        Total : {{cost.toFixed(2)}}
+        </div>
+      <button type="button" class="btn btn-success" (click)="modal.close('Sell Click')" style = "float:right;" [disabled] = "current_qty < 1 || !current_qty || current_qty > stockqty">Sell</button>
+    </div>
+  </ng-template>
